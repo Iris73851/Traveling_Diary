@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    >
+
+    <TableRow android:layout_marginTop ="250sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:layout_column="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberPassword"
+
+            android:layout_marginLeft="90px"
+            android:id="@+id/editText2" />
+
+
+
+    </TableRow>
+
+    <TableRow android:layout_marginTop ="40sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:layout_column="0"
+            android:text="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80px"
+            />
+
+        <Button
+            android:layout_column="1"
+            android:text="2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80px"
+            />
+        <Button
+            android:layout_column="2"
+            android:text="3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80px"
+            />
+    </TableRow>
+
+    <TableRow android:layout_marginTop ="40sp">
+        <Button
+            android:layout_column="0"
+            android:text="4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80px"
+            />
+
+        <Button
+            android:layout_column="1"
+            android:text="5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80px"
+            />
+
+        <Button
+            android:layout_column="2"
+            android:text="6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80px"
+            />
+
+    </TableRow>
+
+    <TableRow android:layout_marginTop ="40sp">
+
+        <Button
+            android:layout_column="0"
+            android:text="7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80px"
+            />
+
+        <Button
+            android:layout_column="1"
+            android:text="8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80px"
+            />
+
+        <Button
+            android:layout_column="2"
+            android:text="8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80px"
+            />
+    </TableRow>
+
+    <TableRow android:layout_marginTop ="40sp">
+
+        <Button
+            android:layout_column="0"
+            android:text="刪除"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80px"
+            />
+
+
+        <Button
+            android:layout_column="2"
+            android:text="確定"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80px"
+            />
+    </TableRow>
+
+</TableLayout>
+
