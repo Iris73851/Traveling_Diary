@@ -1,88 +1,115 @@
 package com.example.iris.album;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.database.Cursor;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.Button;
+
+import java.io.ByteArrayOutputStream;
+
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
-    private GridView gridView;
-    private ImageView imageView;
-    private List<String> thumbs;  //存放縮圖的id
-    private List<String> imagePaths;  //存放圖片的路徑
-    private ImageAdapter imageAdapter;  //用來顯示縮圖
+    private final static int CAMERA = 66;
+    private LocationManager mLocationManager;               //宣告定位管理控制
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //取得定位權限
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        gridView = (GridView) findViewById(R.id.gridView1);
-        imageView = (ImageView) findViewById(R.id.imageView1);
-
-        ContentResolver cr = getContentResolver();
-        String[] projection = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA};
-
-        //查詢SD卡的圖片
-        Cursor cursor = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projection, null, null, null);
-
-        thumbs = new ArrayList<String>();
-        imagePaths = new ArrayList<String>();
-
-        for (int i = 0; i < cursor.getCount(); i++) {
-
-            cursor.moveToPosition(i);
-            int id = cursor.getInt(cursor
-                    .getColumnIndex(MediaStore.Images.Media._ID));// ID
-            thumbs.add(id + "");
-
-            String filepath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));//抓路徑
-
-            imagePaths.add(filepath);
-        }
-
-        cursor.close();
-
-        imageAdapter = new ImageAdapter(MainActivity.this, thumbs);
-        gridView.setAdapter(imageAdapter);
-        imageAdapter.notifyDataSetChanged();
-
-
-        imageView.setOnClickListener(new OnClickListener() {
-
+        Button button1 = (Button) findViewById(R.id.button1);
+        button1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                imageView.setVisibility(View.GONE);
-                gridView.setVisibility(View.VISIBLE);
+            public void onClick(View view) {
+                /*Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);	//使用GPS定位座標
+                Bundle bundle = new Bundle();
+                bundle.putDouble("longitude",location.getLongitude()); //經度
+                bundle.putDouble("latitude",location.getLatitude());   //緯度*/
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, Album_main.class);
+                startActivity(intent);
             }
 
         });
-        imageView.setVisibility(View.GONE);
 
+        Button button2 = (Button) findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //開啟相機功能，並將拍照後的圖片存入SD卡相片集內，須由startActivityForResult且帶入requestCode進行呼叫，原因為拍照完畢後返回程式後則呼叫onActivityResult
+                ContentValues value = new ContentValues();
+                value.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                Uri uri= getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        value);
+                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri.getPath());
+                startActivityForResult(intent, CAMERA);
+            }
+
+        });
+
+        Button button3 = (Button) findViewById(R.id.button3);
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, MapsActivity.class);
+                startActivity(intent);
+            }
+
+        });
+    }
+
+    //拍照完畢或選取圖片後呼叫此函式
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,Intent data)
+    {
+        //藉由requestCode判斷是否為開啟相機或開啟相簿而呼叫的，且data不為null
+        if ((requestCode == CAMERA  ) && data != null)
+        {
+            //取得照片路徑uri
+            Uri uri = data.getData();
+            ContentResolver cr = this.getContentResolver();
+
+            //讀取照片，型態為Bitmap
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+
+            //imageView.setImageBitmap(bm);
+
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, CameraAblam.class);
+
+            //new一個Bundle物件，並將要傳遞的資料傳入
+            Bundle bundle = new Bundle();
+            //將ImageView轉Bitmap
+            //SetIcon.buildDrawingCache();
+            //Bitmap bitmap = yourImageView.getDrawingCache() ;
+            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.JPEG, 50, bs);
+            bundle.putByteArray("image", bs.toByteArray());
+
+            //將Bundle物件assign給intent
+            intent.putExtras(bundle);
+
+            //切換Activity
+            startActivity(intent);
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 
-
-
-    public void setImageView(int position) {
-        Bitmap bm = BitmapFactory.decodeFile(imagePaths.get(position));
-        imageView.setImageBitmap(bm);
-        imageView.setVisibility(View.VISIBLE);
-        gridView.setVisibility(View.GONE);
-    }
 }
